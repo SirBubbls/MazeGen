@@ -17,7 +17,6 @@ private:
 
 	void wall(zone &startzone, int divx, int divy){
 		bool walls[4] = {1, 1, 1, 1};
-=
 		// Generate Horizontal and Vertical Walls
 
 		for(int i = startzone.ix;i <  startzone.jx+1; i++){
