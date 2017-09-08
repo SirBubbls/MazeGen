@@ -4,7 +4,7 @@
 
 using namespace std;
 
-const int size = 30;
+const int size = 31;
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -44,7 +44,7 @@ private:
 			maze[divx][rand() % (startzone.jy-1 - divy + 1) + divy + 1] = 0;
 		}
 		if(walls[3] == 1){
-			maze[rand() % (divx-1 - startzone.ix+1) + startzone.ix+1][divy] = 0;	
+			maze[rand() % (divx - 1 - startzone.ix + 1) + startzone.ix + 1][divy] = 0;
 		}
 		
 
@@ -54,10 +54,19 @@ private:
 			return true;
 		}
 
+		int xdiv = 0;
+		int ydiv = 0;
 		// Split
-		int xdiv = rand() % (startzone.jx-startzone.ix-1)+(startzone.ix+1);
-		int ydiv = rand() % (startzone.jy-startzone.iy-1)+(startzone.iy+1);
-
+		if(startzone.jx - startzone.ix > 2){
+			while(xdiv % 2 == 0){
+				xdiv = rand() % (startzone.jx-startzone.ix-1)+(startzone.ix+1);
+			}	
+		}
+		if(startzone.jy - startzone.iy > 2){
+			while(ydiv % 2 == 0){
+				ydiv = rand() % (startzone.jy-startzone.iy-1)+(startzone.iy+1);
+			}
+		}
 		wall(startzone, xdiv, ydiv);
 
 		// Assign Zones
