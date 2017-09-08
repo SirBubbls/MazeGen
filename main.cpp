@@ -29,23 +29,25 @@ private:
 		// Generate Passthrough
 		int ypass, xpass;
 		
-		// X pass
-		int iteration1= rand() % 2 + 1;		
-		int iteration2= rand() % 2 + 1;
-		for (int i = 0; i <= iteration1;i++){
-			xpass = rand() % (startzone.jx - startzone.ix) + startzone.ix;
-			if (xpass != divy){
-			maze[xpass][divy] = 0;	
-			}
-		}
+		// Wall Selector
+		int solid= rand() % 3 + 0;
+		walls[solid] = 0;
 
-		// 
-		for (int i = 0; i <= iteration2;i++){
-			ypass = rand() % (startzone.jy - startzone.iy) + startzone.iy;	
-			if (ypass != divx){				
-				maze[divx][ypass] = 0;			
-			}
+		// Wall Passages
+		if(walls[0] == 1){
+			maze[divx][rand() % (divy-1-startzone.iy+1) + startzone.iy+1] = 0;
 		}
+		if(walls[1] == 1){
+			maze[rand() % (startzone.jx-1 - divx+1) + divx+1][divy] = 0;
+		}
+		if(walls[2] == 1){
+			maze[divx][rand() % (startzone.jy-1 - divy + 1) + divy + 1] = 0;
+		}
+		if(walls[3] == 1){
+			maze[rand() % (divx-1 - startzone.ix+1) + startzone.ix+1][divy] = 0;	
+		}
+		
+
 	}
 	bool divzone(zone &startzone){
 		if(startzone.jx - startzone.ix < 3 || startzone.jy - startzone.iy < 3){
