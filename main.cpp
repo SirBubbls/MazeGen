@@ -1,10 +1,11 @@
 #include <iostream>
 #include <time.h>
 #include <stdlib.h>
+// #include "mzegen.h"
 
 using namespace std;
 
-const int size = 31;
+const int size = 16;
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -13,12 +14,8 @@ struct zone {
 class maze{
 private:
 	bool maze[size][size];
-	bool check = false;
-
 	void wall(zone &startzone, int divx, int divy){
-		bool walls[4] = {1, 1, 1, 1};
 		// Generate Horizontal and Vertical Walls
-
 		for(int i = startzone.ix;i <  startzone.jx+1; i++){
 			maze[i][divy] = 1;
 		}
@@ -31,25 +28,45 @@ private:
 		
 		// Wall Selector
 		int solid= rand() % 3 + 0;
-		walls[solid] = 0;
 
 		// Wall Passages
-		if(walls[0] == 1){
-			maze[divx][rand() % (divy-1-startzone.iy+1) + startzone.iy+1] = 0;
+		int passage;
+		if(solid != 0){
+			passage = divx;
+			while(passage == divx){
+				passage = rand() % (divy - startzone.iy) + startzone.iy;
+				cout << "1";
+			}
+			maze[divx][passage] = 0;
 		}
-		if(walls[1] == 1){
-			maze[rand() % (startzone.jx-1 - divx+1) + divx+1][divy] = 0;
+		if(solid != 0){
+			passage = divy;
+			while(passage == divy){
+				passage = rand() % (startzone.jx-1 - divx+1) + divx+1;
+				cout << "2";
+			}
+			maze[passage][divy] = 0;
 		}
-		if(walls[2] == 1){
-			maze[divx][rand() % (startzone.jy-1 - divy + 1) + divy + 1] = 0;
+		if(solid != 1){
+			passage = divx;
+			while(passage == divx){
+				passage = rand() % (startzone.jy - divy) + divy;
+				cout << "3";				
+			}
+			maze[divx][passage] = 0;
 		}
-		if(walls[3] == 1){
-			maze[rand() % (divx - 1 - startzone.ix + 1) + startzone.ix + 1][divy] = 0;
+		if(solid != 1){
+			passage = divy;
+			while(passage == divy){
+				passage = rand() % (divx - startzone.ix) + startzone.ix;
+				cout << "4";				
+			}
+			maze[passage][divy] = 0;
 		}
-		
-
+		cout << endl;
 	}
 	bool divzone(zone &startzone){
+		// Check Zone Size
 		if(startzone.jx - startzone.ix < 3 || startzone.jy - startzone.iy < 3){
 			return true;
 		}
@@ -60,13 +77,17 @@ private:
 		if(startzone.jx - startzone.ix > 2){
 			while(xdiv % 2 == 0){
 				xdiv = rand() % (startzone.jx-startzone.ix-1)+(startzone.ix+1);
+				cout << xdiv << ' ' << endl;
 			}	
 		}
 		if(startzone.jy - startzone.iy > 2){
 			while(ydiv % 2 == 0){
 				ydiv = rand() % (startzone.jy-startzone.iy-1)+(startzone.iy+1);
+				cout << ydiv << ' ' << endl;				
 			}
 		}
+		cout << "YDIV : " << ydiv<<endl;
+		cout << "XDIV : " << xdiv << endl;
 		wall(startzone, xdiv, ydiv);
 
 		// Assign Zones
@@ -110,11 +131,27 @@ private:
 				maze[i][j] = 0;
 			}
 		}
+
+		// Wall Vertical and Horizontal
+		for (int i = 0; i <= size; i++){
+			// Vertical
+			maze[0][i] = 1;
+			maze[size - 1][i] = 1;
+			// Horizontal
+			maze[i][0] = 1;
+			maze[i][size -1] = 1;
+		}
 	}
 	void print(){
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < size; j++){
-				cout << maze[j][i]<< ' ';
+				if (maze[j][i] == 0){
+					cout << ' ' << ' ';
+				}
+				else{
+					cout << 'X' << ' ';
+				}
+				// cout << maze[j][i]<< ' ';
 			}
 			cout << endl;
 		}
@@ -129,9 +166,11 @@ private:
 		divzone(startzone);
 		cout << "FINISHED" << endl;
 	}
-} maze;
+};
 
 int main(void){
+	maze maze;
+
 	srand(time(NULL));
 	maze.init();
 	maze.gen();
