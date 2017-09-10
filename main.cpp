@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const int size = 16;
+const int size = 27;
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -28,38 +28,38 @@ private:
 		
 		// Wall Selector
 		int solid= rand() % 3 + 0;
-
+		cout << "solid > " << solid<< endl;
 		// Wall Passages
 		int passage;
 		if(solid != 0){
 			passage = divx;
 			while(passage == divx){
 				passage = rand() % (divy - startzone.iy) + startzone.iy;
-				cout << "1";
+				cout <<"wall > "<< "1"<< endl;
 			}
 			maze[divx][passage] = 0;
 		}
-		if(solid != 0){
+		if(solid != 1){
 			passage = divy;
 			while(passage == divy){
 				passage = rand() % (startzone.jx-1 - divx+1) + divx+1;
-				cout << "2";
+				cout <<"wall > "<< "2"<< endl;
 			}
 			maze[passage][divy] = 0;
 		}
-		if(solid != 1){
+		if(solid != 2){
 			passage = divx;
 			while(passage == divx){
-				passage = rand() % (startzone.jy - divy) + divy;
-				cout << "3";				
+				passage = rand() % (startzone.jy-1 - divy+1) + divy+1;
+				cout <<"wall > "<< "3"<< endl;				
 			}
 			maze[divx][passage] = 0;
 		}
-		if(solid != 1){
+		if(solid != 3){
 			passage = divy;
 			while(passage == divy){
 				passage = rand() % (divx - startzone.ix) + startzone.ix;
-				cout << "4";				
+				cout <<"wall > "<< "4"<< endl;				
 			}
 			maze[passage][divy] = 0;
 		}
@@ -71,17 +71,17 @@ private:
 			return true;
 		}
 
-		int xdiv = 0;
-		int ydiv = 0;
+		int xdiv = 1;
+		int ydiv = 1;
 		// Split
 		if(startzone.jx - startzone.ix > 2){
-			while(xdiv % 2 == 0){
+			while(xdiv % 2 == 1){
 				xdiv = rand() % (startzone.jx-startzone.ix-1)+(startzone.ix+1);
 				cout << xdiv << ' ' << endl;
 			}	
 		}
 		if(startzone.jy - startzone.iy > 2){
-			while(ydiv % 2 == 0){
+			while(ydiv % 2 == 1){
 				ydiv = rand() % (startzone.jy-startzone.iy-1)+(startzone.iy+1);
 				cout << ydiv << ' ' << endl;				
 			}
@@ -156,12 +156,19 @@ private:
 			cout << endl;
 		}
 	}
-	void gen(){
+	int gen(){
+		// Check Maze Dimensions
+		if(size % 2 == 0){
+			system("cls");
+			cerr << "Maze Size Error" << endl;
+			return 1;
+		}
+
 		zone startzone;
-		startzone.ix = 0;
-		startzone.iy = 0;
-		startzone.jx = size-1;
-		startzone.jy = size-1;
+		startzone.ix = 1;
+		startzone.iy = 1;
+		startzone.jx = size-2;
+		startzone.jy = size-2;
 
 		divzone(startzone);
 		cout << "FINISHED" << endl;
