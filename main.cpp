@@ -1,11 +1,12 @@
 #include <iostream>
 #include <time.h>
+#include <windows.h>
 #include <stdlib.h>
 // #include "mzegen.h"
 
 using namespace std;
 
-const int size = 27;
+const int size = 25;
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -113,7 +114,8 @@ private:
 		zone4.jy = startzone.jy;
 		zone4.jx = startzone.jx;
 		print();
-		cin.get();
+		// cin.get();
+		Sleep(300);
 
 		// Split Zone
 		divzone(zone1);
@@ -143,6 +145,7 @@ private:
 		}
 	}
 	void print(){
+		system("cls");
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < size; j++){
 				if (maze[j][i] == 0){
@@ -172,6 +175,9 @@ private:
 
 		divzone(startzone);
 		cout << "FINISHED" << endl;
+	}
+	void save(){
+
 	}
 };
 
