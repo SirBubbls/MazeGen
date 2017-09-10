@@ -33,7 +33,7 @@ private:
 		int passage;
 		if(solid != 0){
 			passage = divx;
-			while(passage == divx){
+			while(passage % 2 == 0){
 				passage = rand() % (divy - startzone.iy) + startzone.iy;
 				cout <<"wall > "<< "1"<< endl;
 			}
@@ -41,7 +41,7 @@ private:
 		}
 		if(solid != 1){
 			passage = divy;
-			while(passage == divy){
+			while(passage % 2 == 0){
 				passage = rand() % (startzone.jx-1 - divx+1) + divx+1;
 				cout <<"wall > "<< "2"<< endl;
 			}
@@ -49,7 +49,7 @@ private:
 		}
 		if(solid != 2){
 			passage = divx;
-			while(passage == divx){
+			while(passage % 2 == 0){
 				passage = rand() % (startzone.jy-1 - divy+1) + divy+1;
 				cout <<"wall > "<< "3"<< endl;				
 			}
@@ -57,7 +57,7 @@ private:
 		}
 		if(solid != 3){
 			passage = divy;
-			while(passage == divy){
+			while(passage % 2 == 0){
 				passage = rand() % (divx - startzone.ix) + startzone.ix;
 				cout <<"wall > "<< "4"<< endl;				
 			}
