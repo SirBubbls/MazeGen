@@ -3,10 +3,11 @@
 #include <windows.h>
 #include <stdlib.h>
 // #include "mzegen.h"
+#include "fileIO.h"
 
 using namespace std;
 
-const int size = 25;
+const int size = 35;
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -29,14 +30,12 @@ private:
 		
 		// Wall Selector
 		int solid= rand() % 3 + 0;
-		cout << "solid > " << solid<< endl;
 		// Wall Passages
 		int passage;
 		if(solid != 0){
 			passage = divx;
 			while(passage % 2 == 0){
 				passage = rand() % (divy - startzone.iy) + startzone.iy;
-				cout <<"wall > "<< "1"<< endl;
 			}
 			maze[divx][passage] = 0;
 		}
@@ -44,7 +43,6 @@ private:
 			passage = divy;
 			while(passage % 2 == 0){
 				passage = rand() % (startzone.jx-1 - divx+1) + divx+1;
-				cout <<"wall > "<< "2"<< endl;
 			}
 			maze[passage][divy] = 0;
 		}
@@ -52,7 +50,6 @@ private:
 			passage = divx;
 			while(passage % 2 == 0){
 				passage = rand() % (startzone.jy-1 - divy+1) + divy+1;
-				cout <<"wall > "<< "3"<< endl;				
 			}
 			maze[divx][passage] = 0;
 		}
@@ -60,11 +57,9 @@ private:
 			passage = divy;
 			while(passage % 2 == 0){
 				passage = rand() % (divx - startzone.ix) + startzone.ix;
-				cout <<"wall > "<< "4"<< endl;				
 			}
 			maze[passage][divy] = 0;
 		}
-		cout << endl;
 	}
 	bool divzone(zone &startzone){
 		// Check Zone Size
@@ -78,17 +73,13 @@ private:
 		if(startzone.jx - startzone.ix > 2){
 			while(xdiv % 2 == 1){
 				xdiv = rand() % (startzone.jx-startzone.ix-1)+(startzone.ix+1);
-				cout << xdiv << ' ' << endl;
 			}	
 		}
 		if(startzone.jy - startzone.iy > 2){
 			while(ydiv % 2 == 1){
 				ydiv = rand() % (startzone.jy-startzone.iy-1)+(startzone.iy+1);
-				cout << ydiv << ' ' << endl;				
 			}
 		}
-		cout << "YDIV : " << ydiv<<endl;
-		cout << "XDIV : " << xdiv << endl;
 		wall(startzone, xdiv, ydiv);
 
 		// Assign Zones
@@ -113,9 +104,6 @@ private:
 		zone4.ix = xdiv;
 		zone4.jy = startzone.jy;
 		zone4.jx = startzone.jx;
-		print();
-		// cin.get();
-		Sleep(300);
 
 		// Split Zone
 		divzone(zone1);
@@ -160,6 +148,8 @@ private:
 		}
 	}
 	int gen(){
+		// Random Seed
+		srand(time(NULL));
 		// Check Maze Dimensions
 		if(size % 2 == 0){
 			system("cls");
@@ -174,21 +164,44 @@ private:
 		startzone.jy = size-2;
 
 		divzone(startzone);
-		cout << "FINISHED" << endl;
 	}
 	void save(){
+		ofstream img("maze.ppm");
+		img << "P3" << endl;
+		img << size << size << endl;
+		img << "255" << endl;
 
+		for (int y = 0; y < size; y++) {
+			for (int  x = 0; x < size; x++) {
+				int r = 0;
+				int g = 0;
+				int b = 0;
+
+				img << r << ' ' << g << ' ' << b << endl;
+			}
+		}
+	}
+	void savetxt(){
+		ofstream file("maze.txt");
+		for (int index = 0; index < size; index++) {
+			for (int Y = 0; Y < size; Y++) {
+				file << maze[index][Y]<< ' ';
+			}
+			file << endl;
+		}
 	}
 };
 
 int main(void){
+	// New Maze Class
 	maze maze;
 
-	srand(time(NULL));
 	maze.init();
 	maze.gen();
 	maze.print();
-	
+	// maze.save();
+	maze.savetxt();
+
 	cin.get();
 	return 0;
 }
