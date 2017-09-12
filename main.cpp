@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const int size = 35;
+const int size = 35;	
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -15,7 +15,50 @@ struct zone {
 
 class maze{
 private:
+	int mazeSize = size;	
 	bool maze[size][size];
+	// Cursor
+	int xpos = 6;
+	int ypos = 6;
+
+	struct position{
+		int x, y;
+	};
+
+	position start;
+	position finish;
+	position cursor;
+
+	void setStart(){
+		start.y = 0;
+		start.x = 0;
+		while(maze[start.x][start.y] != 0){
+			start.x = rand() % mazeSize;
+			start.y = rand() % mazeSize;
+		}
+	}
+
+	void moveUP(){
+		if(cursor.x-1 == 0){
+			cursor.x - 1;
+		}
+	}
+	void moveDOWN(){
+		if(cursor.x+1 == 0){
+			cursor.x + 1;
+		}
+	}
+	void moveLEFT(){
+		if(cursor.y-1 == 0){
+			cursor.y - 1;
+		}
+	}
+	void moveRIGHT(){
+		if(cursor.y+1 == 0){
+			cursor.y + 1;
+		}
+	}
+
 	void wall(zone &startzone, int divx, int divy){
 		// Generate Horizontal and Vertical Walls
 		for(int i = startzone.ix;i <  startzone.jx+1; i++){
@@ -115,7 +158,7 @@ private:
 	}
 
   public:
-	void init(){
+	void init(int mazeSize){
 		for(int i = 0; i <= size; i++){
 			for(int j = 0; j <= size; j++){
 				maze[i][j] = 0;
@@ -133,19 +176,33 @@ private:
 		}
 	}
 	void print(){
-		system("cls");
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < size; j++){
-				if (maze[j][i] == 0){
-					cout << ' ' << ' ';
+				// Cursor Location
+				if(j == start.x && i == start.y){
+					cout << 'O' << " ";
+				} else{ // Print Walls
+						if (maze[j][i] == 0){
+							cout << ' ' << ' ';						
+					}
+					else{
+						cout << 'X' << ' ';
+					}
 				}
-				else{
-					cout << 'X' << ' ';
-				}
-				// cout << maze[j][i]<< ' ';
 			}
 			cout << endl;
 		}
+	}
+	void solve(){
+		// Init Path Array
+		bool path[size][size];
+		for (int i = 0; i <= size; i++) {
+			for (int j = 0; j <= size; j++) {
+				path[i][j] = 0;
+			}
+		}
+
+		
 	}
 	int gen(){
 		// Random Seed
@@ -154,7 +211,8 @@ private:
 		if(size % 2 == 0){
 			system("cls");
 			cerr << "Maze Size Error" << endl;
-			return 1;
+			cerr << "Size +1" << endl;
+
 		}
 
 		zone startzone;
@@ -164,22 +222,7 @@ private:
 		startzone.jy = size-2;
 
 		divzone(startzone);
-	}
-	void save(){
-		ofstream img("maze.ppm");
-		img << "P3" << endl;
-		img << size << size << endl;
-		img << "255" << endl;
-
-		for (int y = 0; y < size; y++) {
-			for (int  x = 0; x < size; x++) {
-				int r = 0;
-				int g = 0;
-				int b = 0;
-
-				img << r << ' ' << g << ' ' << b << endl;
-			}
-		}
+		setStart();
 	}
 	void savetxt(){
 		ofstream file("maze.txt");
@@ -196,11 +239,15 @@ int main(void){
 	// New Maze Class
 	maze maze;
 
-	maze.init();
+	// Set Window Size
+
+
+	maze.init(31);
 	maze.gen();
 	maze.print();
 	// maze.save();
-	maze.savetxt();
+	// maze.savetxt();
+	maze.solve();
 
 	cin.get();
 	return 0;
