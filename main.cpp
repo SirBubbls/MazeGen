@@ -37,7 +37,22 @@ private:
 			start.y = rand() % mazeSize;
 		}
 	}
-
+	void setFinish(){
+		finish.x = 0;
+		finish.y = 0;
+		// int axis = rand() % 1;
+		int axis = 0;
+		if (axis == 0){
+			while(maze[finish.x][1] == 1){
+				finish.x = rand() % mazeSize;
+			}
+		}
+		else{
+			while(maze[1][finish.y] == 1){
+				finish.y = rand() % mazeSize;
+			}
+		}
+	}
 	void moveUP(){
 		if(cursor.x-1 == 0){
 			cursor.x - 1;
@@ -181,12 +196,17 @@ private:
 				// Cursor Location
 				if(j == start.x && i == start.y){
 					cout << 'O' << " ";
-				} else{ // Print Walls
+				}
+				else {
+					if(j == finish.x && i == finish.y){
+						cout << '%' << ' ';
+					} else{ // Print Walls
 						if (maze[j][i] == 0){
 							cout << ' ' << ' ';						
-					}
-					else{
-						cout << 'X' << ' ';
+						}
+						else{
+							cout << 'X' << ' ';
+						}
 					}
 				}
 			}
@@ -223,6 +243,7 @@ private:
 
 		divzone(startzone);
 		setStart();
+		setFinish();
 	}
 	void savetxt(){
 		ofstream file("maze.txt");
