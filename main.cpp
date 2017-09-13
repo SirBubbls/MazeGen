@@ -7,8 +7,11 @@
 
 using namespace std;
 
+// Debug Mode
+bool debug = true;
+
 int steps = 0;
-const int size = 31;	
+const int size = 29;	
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -100,7 +103,6 @@ private:
 		for(int j = startzone.iy; j < startzone.jy+1; j++){
 			maze[divx][j] = 1;
 		}
-
 		// Generate Passthrough
 		int ypass, xpass;
 		
@@ -137,7 +139,6 @@ private:
 			maze[passage][divy] = 0;
 		}
 	}
-
 	void scanMaze(){
 		for (int y = 0; y < mazeSize; y++) {
 			for (int x = 0; x < mazeSize; x++) {
@@ -159,7 +160,6 @@ private:
 				}
 			}
 		}
-
 	}
 	bool divzone(zone &startzone){
 		// Check Zone Size
@@ -339,10 +339,7 @@ private:
 		if(cursor.x == finish.x && cursor.y == finish.y-1 ){
 			return 0;
 		}
-		// Draw Maze
-		// print();
 
-		// Sleep(200);
 		// cout << "cursor.direction = " << cursor.direction << endl;
 		// cin.get();
 		// Sleep(20);
@@ -377,6 +374,12 @@ private:
 		// TURN RIGHT
 		if (leftCheck == 1 && moveFWD() != 0){
 			movePRight();
+		}
+		// Debug
+		if(debug == true){
+			print();
+			// cin.get();
+			Sleep(20);			
 		}
 		navigate();
 	}
@@ -446,9 +449,9 @@ int main(void){
 	// maze.print();
 	// maze.save();
 	// maze.savetxt();
-	maze.smartSolve();
+	maze.solve();
 	maze.print();
-	maze.printNodes();
+	// maze.printNodes();
 	cout << "Steps: " << steps<< endl;
 	
 	cin.get();
