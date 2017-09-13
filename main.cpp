@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const int size = 35;	
+const int size = 27;	
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -23,6 +23,7 @@ private:
 
 	struct position{
 		int x, y;
+		int direction;
 	};
 
 	position start;
@@ -36,6 +37,8 @@ private:
 			start.x = rand() % mazeSize;
 			start.y = rand() % mazeSize;
 		}
+		cursor.x = start.x;
+		cursor.y = start.y;
 	}
 	void setFinish(){
 		finish.x = 0;
@@ -53,24 +56,36 @@ private:
 			}
 		}
 	}
-	void moveUP(){
-		if(cursor.x-1 == 0){
-			cursor.x - 1;
+	bool moveUP(){
+		if(maze[cursor.x][cursor.y-1] == 0){
+			cursor.y--;
+			return 0;
+		}else{
+			return 1;
 		}
 	}
-	void moveDOWN(){
-		if(cursor.x+1 == 0){
-			cursor.x + 1;
+	bool moveDOWN(){
+		if(maze[cursor.x][cursor.y+1] == 0){
+			cursor.y = cursor.y + 1;
+			return 0;
+		}else{
+			return 1;
 		}
 	}
-	void moveLEFT(){
-		if(cursor.y-1 == 0){
-			cursor.y - 1;
+	bool moveLEFT(){
+		if(maze[cursor.x-1][cursor.y] == 0){
+			cursor.x--;
+			return 0;
+		}else{
+			return 1;
 		}
 	}
-	void moveRIGHT(){
-		if(cursor.y+1 == 0){
-			cursor.y + 1;
+	bool moveRIGHT(){
+		if(maze[cursor.x+1][cursor.y] == 0){
+			cursor.x++;
+			return 0;
+		}else{
+			return 1;
 		}
 	}
 
@@ -194,7 +209,7 @@ private:
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < size; j++){
 				// Cursor Location
-				if(j == start.x && i == start.y){
+				if(j == cursor.x && i == cursor.y){
 					cout << 'O' << " ";
 				}
 				else {
@@ -213,16 +228,143 @@ private:
 			cout << endl;
 		}
 	}
+
+	void movePRight(){
+		if (cursor.direction == 0){
+			cursor.direction = 1;
+			moveRIGHT();
+		}
+		else if(cursor.direction == 1){
+			cursor.direction = 2;
+			moveDOWN();
+		}
+		else if(cursor.direction == 2){
+			cursor.direction = 3;
+			moveLEFT();
+		}
+		else if(cursor.direction == 3){
+			cursor.direction = 0;
+			moveUP();
+		}
+	}
+	
+
+	bool moveFWD(){
+		if (cursor.direction == 0){
+			if(moveUP() == 1){
+				return 1;
+			}else{
+				return 0;
+			}
+		}
+		else if(cursor.direction == 1){
+			if(moveRIGHT() == 1){
+				return 1;
+			}else{
+				return 0;
+			}
+		}
+		else if(cursor.direction == 2){
+			if(moveDOWN() == 1){
+				return 1;
+			}else{
+				return 0;
+			}
+		}
+		else if(cursor.direction == 3){
+			if(moveLEFT() == 1){
+				return 1;
+			}else{
+				return 0;
+			}
+		}
+		return 0;
+	}
+	void turnLEFT(){
+		cursor.direction--;
+		if(cursor.direction < 0){
+			cursor.direction = 3;
+		}
+	}
+	bool navigate(){
+		// Winning Condition
+		if(cursor.x == finish.x && cursor.y == finish.y ){
+			return 0;
+		}
+		if(cursor.x == finish.x-1 && cursor.y == finish.y ){
+			return 0;
+		}
+		if(cursor.x == finish.x+1 && cursor.y == finish.y ){
+			return 0;
+		}
+		if(cursor.x == finish.x && cursor.y == finish.y+1 ){
+			return 0;
+		}
+		if(cursor.x == finish.x && cursor.y == finish.y-1 ){
+			return 0;
+		}
+		// Draw Maze
+		print();
+
+		// Sleep(200);
+		// cout << "cursor.direction = " << cursor.direction << endl;
+		// cin.get();
+		Sleep(20);
+		system("cls");
+		// START
+		bool leftCheck = 1;
+
+		if (cursor.direction == 0){
+			if(moveLEFT() == 0){
+				leftCheck = 0;
+				turnLEFT();
+			}
+		}
+		else if(cursor.direction == 1){
+			if(moveUP() == 0){
+				leftCheck = 0;		
+				turnLEFT();						
+			}
+		}
+		else if(cursor.direction == 2){
+			if(moveRIGHT() == 0){
+				leftCheck = 0;		
+				turnLEFT();						
+			}
+		}
+		else if(cursor.direction == 3){
+			if(moveDOWN() == 0){
+				leftCheck = 0;		
+				turnLEFT();								
+			}
+		}
+
+		if (leftCheck == 1 && moveFWD() != 0){
+			movePRight();
+		}
+
+		// if(leftCheck == 1){
+		// 	cout << "Can't move Left" << endl;
+		// 	while(moveFWD() != 0){
+		// 		cursor.direction--;
+		// 		if(cursor.direction < 0){
+		// 			cursor.direction = 3;
+		// 		}
+		// 	}
+		// }
+		navigate();
+	}
+
 	void solve(){
 		// Init Path Array
-		bool path[size][size];
+		bool path[mazeSize][mazeSize];
 		for (int i = 0; i <= size; i++) {
 			for (int j = 0; j <= size; j++) {
 				path[i][j] = 0;
 			}
 		}
-
-		
+		cursor.direction = 0;
+		navigate();
 	}
 	int gen(){
 		// Random Seed
@@ -259,16 +401,16 @@ private:
 int main(void){
 	// New Maze Class
 	maze maze;
-
 	// Set Window Size
 
 
 	maze.init(31);
 	maze.gen();
-	maze.print();
+	// maze.print();
 	// maze.save();
 	// maze.savetxt();
 	maze.solve();
+	maze.print();
 
 	cin.get();
 	return 0;
