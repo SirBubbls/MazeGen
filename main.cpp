@@ -7,7 +7,8 @@
 
 using namespace std;
 
-const int size = 27;	
+int steps = 0;
+const int size = 31;	
 struct zone {
 	int ix, iy;
 	int jx, jy;
@@ -15,15 +16,17 @@ struct zone {
 
 class maze{
 private:
-	int mazeSize = size;	
-	bool maze[size][size];
-	// Cursor
-	int xpos = 6;
-	int ypos = 6;
+  int mazeSize = size;
+  bool maze[size][size];
+  int nodes[size][size];  
+  // Cursor
+  int xpos = 6;
+  int ypos = 6;
 
-	struct position{
-		int x, y;
-		int direction;
+  struct position
+  {
+	  int x, y;
+	  int direction;
 	};
 
 	position start;
@@ -134,6 +137,30 @@ private:
 			maze[passage][divy] = 0;
 		}
 	}
+
+	void scanMaze(){
+		for (int y = 0; y < mazeSize; y++) {
+			for (int x = 0; x < mazeSize; x++) {
+				if(maze[x][y] == 0){
+					int paths = 0;
+					if(maze[x+1][y] == 0){
+						paths++;
+					}
+					if(maze[x-1][y] == 0){
+						paths++;
+					}
+					if(maze[x][y+1] == 0){
+						paths++;
+					}
+					if(maze[x][y-1] == 0){
+						paths++;
+					}
+					nodes[x][y] = paths;
+				}
+			}
+		}
+
+	}
 	bool divzone(zone &startzone){
 		// Check Zone Size
 		if(startzone.jx - startzone.ix < 3 || startzone.jy - startzone.iy < 3){
@@ -188,6 +215,14 @@ private:
 	}
 
   public:
+	void printNodes(){
+		for (int y = 0; y < mazeSize; y++) {
+			for (int x = 0; x < mazeSize; x++) {
+				cout << nodes[x][y] << ' ';
+			}
+			cout << endl;
+		}
+	}
 	void init(int mazeSize){
 		for(int i = 0; i <= size; i++){
 			for(int j = 0; j <= size; j++){
@@ -287,6 +322,7 @@ private:
 		}
 	}
 	bool navigate(){
+		steps++;
 		// Winning Condition
 		if(cursor.x == finish.x && cursor.y == finish.y ){
 			return 0;
@@ -304,12 +340,12 @@ private:
 			return 0;
 		}
 		// Draw Maze
-		print();
+		// print();
 
 		// Sleep(200);
 		// cout << "cursor.direction = " << cursor.direction << endl;
 		// cin.get();
-		Sleep(20);
+		// Sleep(20);
 		system("cls");
 		// START
 		bool leftCheck = 1;
@@ -331,28 +367,29 @@ private:
 				leftCheck = 0;		
 				turnLEFT();						
 			}
-		}
+		} // TURN LEFT
 		else if(cursor.direction == 3){
 			if(moveDOWN() == 0){
 				leftCheck = 0;		
 				turnLEFT();								
 			}
 		}
-
+		// TURN RIGHT
 		if (leftCheck == 1 && moveFWD() != 0){
 			movePRight();
 		}
-
-		// if(leftCheck == 1){
-		// 	cout << "Can't move Left" << endl;
-		// 	while(moveFWD() != 0){
-		// 		cursor.direction--;
-		// 		if(cursor.direction < 0){
-		// 			cursor.direction = 3;
-		// 		}
-		// 	}
-		// }
 		navigate();
+	}
+
+	void smartSolve(){
+		// Init Node Array
+		for (int y = 0; y < mazeSize; y++) {
+			for (int x = 0; x < mazeSize; x++) {
+				nodes[x][y] = 0;
+			}
+		}
+		// 
+		scanMaze();
 	}
 
 	void solve(){
@@ -409,9 +446,11 @@ int main(void){
 	// maze.print();
 	// maze.save();
 	// maze.savetxt();
-	maze.solve();
+	maze.smartSolve();
 	maze.print();
-
+	maze.printNodes();
+	cout << "Steps: " << steps<< endl;
+	
 	cin.get();
 	return 0;
 }
