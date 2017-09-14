@@ -6,7 +6,7 @@
         {
             "taskName": "build",
             "type": "shell",
-            "command": "c++ main.cpp -std=c++11 -o MazeGEN.exe"
+            "command": "c++ main.cpp -std=c++11 -o MazeKit.exe"
         }
     ]
 }

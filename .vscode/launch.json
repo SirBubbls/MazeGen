@@ -5,7 +5,7 @@
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "MazeGEN.exe",
+            "program": "MazeKit.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

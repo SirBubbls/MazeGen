@@ -2,8 +2,6 @@
 #include <time.h>
 #include <windows.h>
 #include <stdlib.h>
-// #include "mzegen.h"
-#include "fileIO.h"
 
 using namespace std;
 
@@ -427,15 +425,15 @@ private:
 		setStart();
 		setFinish();
 	}
-	void savetxt(){
-		ofstream file("maze.txt");
-		for (int index = 0; index < size; index++) {
-			for (int Y = 0; Y < size; Y++) {
-				file << maze[index][Y]<< ' ';
-			}
-			file << endl;
-		}
-	}
+	// void savetxt(){
+	// 	ofstream file("maze.txt");
+	// 	for (int index = 0; index < size; index++) {
+	// 		for (int Y = 0; Y < size; Y++) {
+	// 			file << maze[index][Y]<< ' ';
+	// 		}
+	// 		file << endl;
+	// 	}
+	// }
 };
 
 int main(void){
